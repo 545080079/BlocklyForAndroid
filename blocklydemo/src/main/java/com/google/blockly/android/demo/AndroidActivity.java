@@ -105,7 +105,7 @@ public class AndroidActivity extends AbstractBlocklyActivity {
     protected int getActionBarMenuResId() {
         return R.menu.split_actionbar;
     }
-
+//kdkdk
     @NonNull
     @Override
     protected List<String> getBlockDefinitionsJsonPaths() {
