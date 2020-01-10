@@ -44,6 +44,7 @@ public class CodeGenerationRequest {
     public CodeGenerationRequest(@NonNull String xml, CodeGeneratorCallback callback,
             @NonNull LanguageDefinition generatorsLanguage, List<String> blockDefinitionsFilenames,
             List<String> blockGeneratorsFilenames) {
+
         if (xml == null || xml.isEmpty()) {
             throw new IllegalArgumentException("The blockly workspace string must not be empty " +
                     "or null.");
