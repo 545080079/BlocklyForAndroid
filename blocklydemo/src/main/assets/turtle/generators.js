@@ -13,11 +13,13 @@
  *  limitations under the License.
  */
 
-/**
- * @fileoverview Generators for the Turtle Blockly demo on Android.
- * @author fenichel@google.com (Rachel Fenichel)
- */
 'use strict';
+
+//Create By: Lyt
+//Function:获取拼接的块的Value
+Blockly.JavaScript.getThisValue = function(a,b) {
+  return (Blockly.JavaScript.valueToCode(a, b, Blockly.JavaScript.ORDER_NONE) || "''")
+};
 
 // Extensions to Blockly's language and JavaScript generator.
 Blockly.JavaScript['turtle_move_internal'] = function(block) {
@@ -26,6 +28,22 @@ Blockly.JavaScript['turtle_move_internal'] = function(block) {
   return 'Turtle.' + block.getFieldValue('DIR') +
       '(' + value + ', \'block_id_' + block.id + '\');\n';
 };
+
+
+Blockly.JavaScript['print'] = function(block) {
+  // Generate JavaScript for moving forward or backwards.
+  var print_isLine = block.getFieldValue('print_isLine');
+  var print_content = block.getFieldValue('print_content');
+
+ // var print_content_any = block.getFieldValue('print_content_any');这样获取不到拼接块的值
+  var print_content_any=Blockly.JavaScript.getThisValue(block,"print_content_any");//获取print_content_any属性值，给到this->block
+
+  if(print_content=='0')
+    return 'System.out.'+print_isLine+'("' + print_content_any + '");';
+  else
+    return 'System.out.'+print_isLine+'("' + print_content + '");';
+};
+
 
 Blockly.JavaScript['turtle_turn_internal'] = function(block) {
   // Generate JavaScript for turning left or right.

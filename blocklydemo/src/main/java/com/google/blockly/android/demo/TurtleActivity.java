@@ -15,27 +15,31 @@
 
 package com.google.blockly.android.demo;
 
+import android.content.Context;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.blockly.android.AbstractBlocklyActivity;
 import com.google.blockly.android.BlocklySectionsActivity;
 import com.google.blockly.android.codegen.CodeGenerationRequest;
 import com.google.blockly.android.control.BlocklyController;
 import com.google.blockly.model.DefaultBlocks;
-import com.google.blockly.util.JavascriptUtil;
 import com.google.blockly.utils.BlockLoadingException;
+import okhttp3.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,6 +52,8 @@ public class TurtleActivity extends BlocklySectionsActivity {
 
     private static final String SAVE_FILENAME = "turtle_workspace.xml";
     private static final String AUTOSAVE_FILENAME = "turtle_workspace_temp.xml";
+    private static String generatedCodeSave;
+    private String mNoCodeText;
 
     static final List<String> TURTLE_BLOCK_DEFINITIONS = Arrays.asList(
             DefaultBlocks.COLOR_BLOCKS_PATH,
@@ -60,6 +66,7 @@ public class TurtleActivity extends BlocklySectionsActivity {
     );
     static final List<String> TURTLE_BLOCK_GENERATORS = Arrays.asList(
             "turtle/generators.js"
+            //"yail/yail.js"
     );
     private static final int MAX_LEVELS = 10;
     private static final String[] LEVEL_TOOLBOX = new String[MAX_LEVELS];
@@ -78,21 +85,17 @@ public class TurtleActivity extends BlocklySectionsActivity {
     }
 
     private final Handler mHandler = new Handler();
-    private WebView mTurtleWebview;
-    private final CodeGenerationRequest.CodeGeneratorCallback mCodeGeneratorCallback =
+    private TextView mGeneratedTextView;
+    CodeGenerationRequest.CodeGeneratorCallback mCodeGeneratorCallback =
             new CodeGenerationRequest.CodeGeneratorCallback() {
                 @Override
                 public void onFinishCodeGeneration(final String generatedCode) {
-                    // Sample callback.
-                    Log.i(TAG, "generatedCode:\n" + generatedCode);
-                    Toast.makeText(getApplicationContext(), generatedCode,
-                            Toast.LENGTH_LONG).show();
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            String encoded = "Turtle.execute("
-                                    + JavascriptUtil.makeJsString(generatedCode) + ")";
-                            mTurtleWebview.loadUrl("javascript:" + encoded);
+                            mGeneratedTextView.setText(generatedCode);
+                            DemoUtil.updateTextMinWidth(mGeneratedTextView, TurtleActivity.this);
+                            generatedCodeSave=generatedCode;
                         }
                     });
                 }
@@ -113,6 +116,7 @@ public class TurtleActivity extends BlocklySectionsActivity {
         return onDemoItemSelected(item, this) || super.onOptionsItemSelected(item);
     }
 
+
     static boolean onDemoItemSelected(MenuItem item, AbstractBlocklyActivity activity) {
         BlocklyController controller = activity.getController();
         int id = item.getItemId();
@@ -127,6 +131,88 @@ public class TurtleActivity extends BlocklySectionsActivity {
         } else if (id == R.id.action_demo_paint_strokes) {
             loadWorkspace = true;
             filename = "paint_strokes.xml";
+        }else if(id==R.id.action_submit){
+            //提交代码至服务器解析
+            //OkHttpClient client = new OkHttpClient();
+            //Toast.makeText(MyApplication.getContext(),generatedCodeSave,Toast.LENGTH_LONG).show();
+            Log.d("logCode","ing...");
+            Log.d("logCode",generatedCodeSave);
+
+            //MediaType fileType = MediaType.parse("File/*");
+            //File file=new File("path");
+            //RequestBody body=RequestBody.create(file,fileType);
+
+            generatedCodeSave="public class default{\n" +
+                    "public static void main(String[] args)\n" +
+                    "{\n" +
+                    generatedCodeSave +
+                    "}}";
+
+
+            OkHttpClient client = new OkHttpClient();
+            final Request request = new Request.Builder()
+                    .url("http://47.102.108.197/?" + "type=codeToAPK" + "&&code=" +generatedCodeSave)//请求服务地址47.102.108.197/codeAPK
+                    .build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("logCode","失败");
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if(response.isSuccessful()){//回调的方法执行在子线程。
+                            Log.d("logCode","status = "+response.code());
+                            Log.d("logCode","Uploading Generated Code...");//test
+
+
+                        try{
+                            InputStream is = response.body().byteStream();//从服务器得到输入流对象
+
+                            String mDestFileName="/data/com.google.blockly.demo/files/default.class";
+                            File targetFile = new File(Environment.getDataDirectory(),mDestFileName);
+                            Log.d("logCode",(Environment.getDataDirectory()).toString());
+
+                            if(targetFile.exists()){
+                                Log.i("logCode", "file existed!");
+                                return;
+                            }
+//                            if(!targetFile.getParentFile().exists()){
+//                                targetFile.getParentFile().mkdirs();
+//                            }
+
+                            FileOutputStream fos = new FileOutputStream(targetFile);
+                            byte[] buffer = new byte[1024*100];
+                            int length=0;
+                            int current = 0;
+
+                            Log.d("logCode", "is.available() = "+ is.available());
+
+                            while((length=is.read(buffer)) != -1){
+                                fos.write(buffer, 0, length);
+                                fos.flush();
+                                current += length;
+                                Log.d("logCode", "length = "+length);
+                                Log.d("logCode", "cur = "+current);
+                            }
+                            //5. 文件下载完成
+                            fos.close();
+
+                        }catch(Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+
+                        //do other
+                        //...
+
+
+                }
+            }
+
+
+
+        });
+
         }
 
         if (loadWorkspace) {
@@ -201,13 +287,13 @@ public class TurtleActivity extends BlocklySectionsActivity {
     protected View onCreateContentView(int parentId) {
         View root = getLayoutInflater().inflate(R.layout.turtle_content, null);
 
-        mTurtleWebview = (WebView) root.findViewById(R.id.turtle_runtime);
-        mTurtleWebview.getSettings().setJavaScriptEnabled(true);
-        mTurtleWebview.setWebChromeClient(new WebChromeClient());
+        mGeneratedTextView =root.findViewById(R.id.generated_code);
+        DemoUtil.updateTextMinWidth(mGeneratedTextView, this);
+        mNoCodeText = mGeneratedTextView.getText().toString(); // Capture initial value.
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
-        mTurtleWebview.loadUrl("file:///android_asset/turtle/turtle.html");
 
         return root;
     }

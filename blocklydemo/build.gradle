@@ -38,7 +38,12 @@ android {
     }
 }
 
+repositories {
+    maven { url 'https://maven.aliyun.com/repository/google' }
+    maven{ url 'https://maven.aliyun.com/repository/jcenter'}
+    }
 dependencies {
     testImplementation 'junit:junit:4.12'
     api project(':blocklylib-vertical')
+    implementation("com.squareup.okhttp3:okhttp:4.2.1")
 }

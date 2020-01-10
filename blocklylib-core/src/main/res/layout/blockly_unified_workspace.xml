@@ -11,7 +11,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:layout_toEndOf="@+id/blockly_categories"
-              android:layout_toRightOf="@id/blockly_categories"/>
+              android:layout_toRightOf="@id/blockly_categories" android:layout_marginLeft="0dp"
+              android:layout_marginStart="0dp"/>
 
     <fragment android:name="com.google.blockly.android.FlyoutFragment"
               android:id="@+id/blockly_trash_ui"

@@ -14,11 +14,13 @@
           android:orderInCategory="15" app:showAsAction="ifRoom"
           android:icon="@drawable/ic_play_arrow_white_24dp"/>
 
-    <item android:id="@+id/action_demo_android" android:title="@string/action_demo_android"
+    <item android:id="@+id/action_submit" android:title="Submit"
           android:orderInCategory="90" app:showAsAction="never"/>
-    <item android:id="@+id/action_demo_lacey_curves" android:title="@string/action_demo_lacey_curves"
+    <item android:id="@+id/action_demo_android" android:title="@string/action_demo_android"
           android:orderInCategory="91" app:showAsAction="never"/>
-    <item android:id="@+id/action_demo_paint_strokes" android:title="@string/action_demo_paint_strokes"
+    <item android:id="@+id/action_demo_lacey_curves" android:title="@string/action_demo_lacey_curves"
           android:orderInCategory="92" app:showAsAction="never"/>
+    <item android:id="@+id/action_demo_paint_strokes" android:title="@string/action_demo_paint_strokes"
+          android:orderInCategory="93" app:showAsAction="never"/>
 
 </menu>

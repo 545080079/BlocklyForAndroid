@@ -30,6 +30,7 @@
     <string name="comparison_activity_name">Blockly Web Comparison</string>
     <string name="split_activity_name">Blockly Split</string>
     <string name="turtle_activity_name">Blockly Turtle</string>
+    <string name="android_activity_name">Blockly Android</string>
     <string name="style_activity_name">Blockly Styles</string>
     <string name="flyout_activity_name">Blockly Flyouts</string>
     <string name="flyout_activity_title">Blockly Flyout Demos</string>
