@@ -1,5 +1,7 @@
 package com.google.blockly.android.codegen;
 
+import android.util.Log;
+
 /**
  * Defines the core language file to be used in code generation. To be used by the generator
  * Blockly needs to know the path to the file and the object that has the generator
@@ -62,5 +64,7 @@ public class LanguageDefinition {
     public LanguageDefinition(String filename, String generatorObject) {
         mLanguageFilename = filename;
         mGeneratorRef = generatorObject;
+        Log.d("lyt","mLanguageFilename = "+filename);
+        Log.d("lyt","mGeneratorRef = "+generatorObject);
     }
 }
