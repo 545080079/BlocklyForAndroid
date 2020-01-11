@@ -30,6 +30,7 @@ import java.util.Queue;
  *
  * A connection to the service is only made the first time code generation is requested.
  */
+
 public class CodeGeneratorManager {
     private static final String TAG = "CodeGeneratorManager";
 

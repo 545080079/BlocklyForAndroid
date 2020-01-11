@@ -781,10 +781,6 @@ Blockly.Android.variables_get_dynamic = Blockly.Android.variables_get;
 Blockly.Android.variables_set_dynamic = Blockly.Android.variables_set;
 
 
-
-
-
-
 //Create By: Lyt
 //Function:获取拼接的块的Value
 Blockly.Android.getThisValue = function(a,b) {
@@ -823,4 +819,3 @@ Blockly.Android.workspaceToCode = function(workspace) {
     code = goog.string.trimRight(code.replace(/(,\s*)?'block_id_[^']+'\)/g, ')'))
     return code;
 };
-//fff
