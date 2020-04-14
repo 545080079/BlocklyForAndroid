@@ -15,31 +15,42 @@
 
 package com.google.blockly.android.demo;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.google.blockly.android.AbstractBlocklyActivity;
 import com.google.blockly.android.codegen.CodeGenerationRequest;
 import com.google.blockly.android.codegen.LanguageDefinition;
 import com.google.blockly.model.DefaultBlocks;
-
+import com.google.blockly.util.installApkUtil;
+import com.google.blockly.util.submitUtil;
 import java.util.Arrays;
 import java.util.List;
 
 
-/**
- * Demo activity that programmatically adds a view to split the screen between the Blockly workspace
- * and an arbitrary other view or fragment and generates Python code.
- */
 public class AndroidActivity extends AbstractBlocklyActivity {
-    private static final String TAG = "AndroidActivity";
 
-    private static final String SAVE_FILENAME = "android_workspace.xml";
+    private static Context mContext;
+    private static final String TAG = "AndroidActivity";
+    private static int screen_id = 1;
+    private static String SAVE_FILENAME = "android_workspace_" + screen_id + ".xml";
     private static final String AUTOSAVE_FILENAME = "android_workspace_temp.xml";
+
+    //Top View
+    private static Button btn_screen1, btn_screen2, btn_screen3, btn_screen4;
+    private static FrameLayout f1, f2, f3, f4;//blockly activity instance 1-4
+    private static DrawerLayout drawer_layout;
+
     // Add custom blocks to this list.
     private static final List<String> ANDROID_BLOCK_DEFINITIONS = Arrays.asList(
             DefaultBlocks.COLOR_BLOCKS_PATH,
@@ -54,13 +65,16 @@ public class AndroidActivity extends AbstractBlocklyActivity {
 
     );
 
-    private static final List<String> ANDROID_GENERATORS = Arrays.asList();
+    private static final List<String> ANDROID_GENERATORS = Arrays.asList(
+            "generators/android_compressed.js"
+    );
 
     private static final LanguageDefinition ANDROID_LANGUAGE_DEF
             = LanguageDefinition.ANDROID_LANGUAGE_DEFINITION;
 
-    private TextView mGeneratedTextView;
+    private TextView mGeneratedTextView, mGeneratedTextView2;
     private Handler mHandler;
+    private static String generatedCodeSave;
 
     private String mNoCodeText;
 
@@ -71,41 +85,187 @@ public class AndroidActivity extends AbstractBlocklyActivity {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            mGeneratedTextView.setText(generatedCode);
+                            mGeneratedTextView.setText(generatedCode+"\n}}");
                             DemoUtil.updateTextMinWidth(mGeneratedTextView, AndroidActivity.this);
+                            generatedCodeSave=generatedCode + "\n}}";
+
                         }
                     });
                 }
             };
 
     @Override
+    public boolean onSupportNavigateUp() {
+//
+
+        return super.onSupportNavigateUp();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        return onDemoItemSelected(item, this) || super.onOptionsItemSelected(item);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    static boolean onDemoItemSelected(MenuItem item, AbstractBlocklyActivity activity) {
+        int id = item.getItemId();
+        boolean flag=false;
+        if (id == R.id.action_submitCode) {
+            Toast.makeText(mContext,"正在下载...(需30-60秒)",Toast.LENGTH_LONG).show();
+            submitUtil.submit(mContext, generatedCodeSave);//提交到服务器
+            flag=true;
+        }
+        else if(id==R.id.action_installApk)
+        {
+            installApkUtil.installApk(mContext, "default.apk");
+            flag=true;
+        }
+        else if(id==R.id.action_refresh)
+        {
+            mContext.startActivity(new Intent(mContext,AndroidActivity.class));
+            flag=true;
+        }
+
+        return flag;
+
+    }
+
+
+
+    //重载入: 当前页面xml + 代码生成Area
+    @Override
+    protected void onResume() {
+        super.onResume();
+        screen_id = getIntent().getIntExtra("screen_id", 1);
+        SAVE_FILENAME = "android_workspace_" + screen_id + ".xml";
+        onLoadWorkspace();
+        if (getController().getWorkspace().hasBlocks()) {
+            onRunCode();
+        } else {
+            Log.i(TAG, "No blocks in workspace. Skipping run request.");
+        }
+
+        Log.i(TAG, SAVE_FILENAME);
+    }
+
+
+//Top View bind
+    public void bindView(){
+
+        drawer_layout = findViewById(R.id.drawer_layout);
+        btn_screen1 = findViewById(R.id.btn_screen1);
+        btn_screen2 = findViewById(R.id.btn_screen2);
+        btn_screen3 = findViewById(R.id.btn_screen3);
+        btn_screen4 = findViewById(R.id.btn_screen4);
+        f1 = findViewById(R.id.content_container);
+        f2 = findViewById(R.id.content_container2);
+        f3 = findViewById(R.id.content_container3);
+        f4 = findViewById(R.id.content_container4);
+        btn_screen1.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                f1.setVisibility(View.VISIBLE);
+                f2.setVisibility(View.INVISIBLE);
+                f3.setVisibility(View.INVISIBLE);
+                f4.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        btn_screen2.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                f1.setVisibility(View.INVISIBLE);
+                f2.setVisibility(View.VISIBLE);
+                f3.setVisibility(View.INVISIBLE);
+                f4.setVisibility(View.INVISIBLE);
+            }
+        });
+        btn_screen3.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                f1.setVisibility(View.INVISIBLE);
+                f2.setVisibility(View.INVISIBLE);
+                f3.setVisibility(View.VISIBLE);
+                f4.setVisibility(View.INVISIBLE);
+            }
+        });
+        btn_screen4.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                f1.setVisibility(View.INVISIBLE);
+                f2.setVisibility(View.INVISIBLE);
+                f3.setVisibility(View.INVISIBLE);
+                f4.setVisibility(View.VISIBLE);
+            }
+        });
+
+        drawer_layout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View view, float v) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View view) {
+                Toast.makeText(AndroidActivity.this, "屏幕切换", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View view) {
+                Toast.makeText(AndroidActivity.this, "已切换至屏幕 ", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDrawerStateChanged(int i) {
+
+            }
+        });
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mHandler = new Handler();
+        mContext=this;
+
+        bindView();
+
     }
 
+    private int content_seq = 1;
     @Override
     protected View onCreateContentView(int parentId) {
-        View root = getLayoutInflater().inflate(R.layout.split_content, null);
-        mGeneratedTextView = (TextView) root.findViewById(R.id.generated_code);
-        DemoUtil.updateTextMinWidth(mGeneratedTextView, this);
+        View root;
+        if(content_seq == 1){
+            root = getLayoutInflater().inflate(R.layout.split_content, null);
+            mGeneratedTextView = root.findViewById(R.id.generated_code);
+            DemoUtil.updateTextMinWidth(mGeneratedTextView, this);
+        }
+        else if(content_seq == 2){
+            root = getLayoutInflater().inflate(R.layout.split_content2, null);
+            mGeneratedTextView2 = root.findViewById(R.id.generated_code_2);
+            DemoUtil.updateTextMinWidth(mGeneratedTextView2, this);
+        }
+        else if(content_seq == 3){
+            root = getLayoutInflater().inflate(R.layout.split_content3, null);
+        }
+        else if(content_seq == 4){
+            root = getLayoutInflater().inflate(R.layout.split_content4, null);
+        }
+        else{
+            root = null;
+        }
+        content_seq++;
+
 
         mNoCodeText = mGeneratedTextView.getText().toString(); // Capture initial value.
 
         return root;
+
     }
 
     @Override
     protected int getActionBarMenuResId() {
-        return R.menu.split_actionbar;
+        return R.menu.android_actionbar;
     }
-//kdkdk
     @NonNull
     @Override
     protected List<String> getBlockDefinitionsJsonPaths() {
@@ -115,7 +275,7 @@ public class AndroidActivity extends AbstractBlocklyActivity {
     @NonNull
     @Override
     protected LanguageDefinition getBlockGeneratorLanguage() {
-        return ANDROID_LANGUAGE_DEF;
+        return ANDROID_LANGUAGE_DEF;//这个是Android.js
     }
 
     @NonNull
@@ -127,7 +287,7 @@ public class AndroidActivity extends AbstractBlocklyActivity {
     @NonNull
     @Override
     protected List<String> getGeneratorsJsPaths() {
-        return ANDROID_GENERATORS;
+        return ANDROID_GENERATORS;//这个是用户extend的js
     }
 
     @NonNull
@@ -153,6 +313,10 @@ public class AndroidActivity extends AbstractBlocklyActivity {
     @NonNull
     protected String getWorkspaceSavePath() {
         return SAVE_FILENAME;
+    }
+
+    private String getWorkspaceById(int id){
+        return "workspace_" + id + ".xml";
     }
 
     /**

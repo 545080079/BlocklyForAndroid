@@ -16,6 +16,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.google.blockly.android.demo"
           xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
     <application
         tools:replace="android:theme"
         android:allowBackup="true"
@@ -24,10 +27,39 @@
         android:theme="@style/AppTheme"
         android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
-    >
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <provider
+                android:authorities="com.google.blockly"
+                android:name="android.support.v4.content.FileProvider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/files_paths" />
+        </provider>
+
+        <service android:name="com.google.blockly.service.NotificationService">
+            <intent-filter>
+                <action android:name="com.google.blockly.service.NotificationService"></action>
+            </intent-filter>
+        </service>
+
+
+        <activity
+                android:name=".LoginActivity"
+                android:label="MyLogin"
+                android:taskAffinity="com.google.blockly.demo.LoginActivity"
+                android:windowSoftInputMode="stateHidden|adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
                 android:name=".AndroidActivity"
-                android:label="@string/android_activity_name"
+                android:label="MyCode"
                 android:taskAffinity="com.google.blockly.demo.AndroidActivity"
                 android:windowSoftInputMode="stateHidden|adjustPan">
             <intent-filter>
@@ -36,101 +68,9 @@
             </intent-filter>
         </activity>
 
-
         <activity
-                android:name=".TurtleActivity"
-                android:label="@string/turtle_activity_name"
-                android:taskAffinity="com.google.blockly.demo.TurtleActivity"
-                android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".SimpleActivity"
-            android:label="@string/simple_activity_name"
-            android:taskAffinity="com.google.blockly.SimpleActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".SimpleFragmentHostActivity"
-            android:label="@string/simple_fragment_name"
-            android:taskAffinity="com.google.blockly.SimpleFragmentHostActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".LuaActivity"
-            android:label="@string/lua_activity_name"
-            android:taskAffinity="com.google.blockly.LuaActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".DartActivity"
-            android:label="@string/dart_activity_name"
-            android:taskAffinity="com.google.blockly.DartActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".PHPActivity"
-            android:label="@string/php_activity_name"
-            android:taskAffinity="com.google.blockly.PHPActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".PythonActivity"
-            android:label="@string/python_activity_name"
-            android:taskAffinity="com.google.blockly.PythonActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".DevTestsActivity"
-            android:label="@string/dev_activity_name"
-            android:theme="@style/StylesDemoTheme"
-            android:taskAffinity="com.google.blockly.demo.MainActivity"
-            android:windowSoftInputMode="stateHidden|adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".SplitActivity"
-            android:label="@string/split_activity_name"
-            android:taskAffinity="com.google.blockly.demo.SplitActivity"
-            android:windowSoftInputMode="stateHidden|adjustPan">
+                android:name=".PreActivity"
+                android:label="XML Design">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -138,48 +78,149 @@
         </activity>
 
 
-        <activity
-            android:name=".StylesActivity"
-            android:label="@string/style_activity_name"
-            android:taskAffinity="com.google.blockly.demo.StylesActivity"
-            android:theme="@style/StylesDemoTheme"
-            android:windowSoftInputMode="stateHidden|adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+<!--        <activity-->
+<!--                android:name=".TurtleActivity"-->
+<!--                android:label="@string/turtle_activity_name"-->
+<!--                android:taskAffinity="com.google.blockly.demo.TurtleActivity"-->
+<!--                android:windowSoftInputMode="stateHidden">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
 
-        <activity
-            android:name=".FlyoutDemos"
-            android:label="@string/flyout_activity_name"
-            android:taskAffinity="com.google.blockly.demo.FlyoutDemos"
-            android:windowSoftInputMode="stateHidden|adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+<!--        <activity-->
+<!--            android:name=".SimpleActivity"-->
+<!--            android:label="@string/simple_activity_name"-->
+<!--            android:taskAffinity="com.google.blockly.SimpleActivity"-->
+<!--            android:windowSoftInputMode="stateHidden">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
 
-        <activity
-            android:name=".flyout.AlwaysOpenToolboxActivity"
-            android:label="@string/always_open_toolbox_activity_name"
-            android:taskAffinity="com.google.blockly.demo.FlyoutDemos"
-            android:windowSoftInputMode="stateHidden|adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+<!--        <activity-->
+<!--            android:name=".SimpleFragmentHostActivity"-->
+<!--            android:label="@string/simple_fragment_name"-->
+<!--            android:taskAffinity="com.google.blockly.SimpleFragmentHostActivity"-->
+<!--            android:windowSoftInputMode="stateHidden">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
 
-        <activity
-            android:name=".flyout.NoCategoriesToolboxActivity"
-            android:label="@string/no_categories_toolbox_activity_name"
-            android:taskAffinity="com.google.blockly.demo.FlyoutDemos"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+<!--        <activity-->
+<!--            android:name=".LuaActivity"-->
+<!--            android:label="@string/lua_activity_name"-->
+<!--            android:taskAffinity="com.google.blockly.LuaActivity"-->
+<!--            android:windowSoftInputMode="stateHidden">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+<!--        <activity-->
+<!--            android:name=".DartActivity"-->
+<!--            android:label="@string/dart_activity_name"-->
+<!--            android:taskAffinity="com.google.blockly.DartActivity"-->
+<!--            android:windowSoftInputMode="stateHidden">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+<!--        <activity-->
+<!--            android:name=".PHPActivity"-->
+<!--            android:label="@string/php_activity_name"-->
+<!--            android:taskAffinity="com.google.blockly.PHPActivity"-->
+<!--            android:windowSoftInputMode="stateHidden">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+<!--        <activity-->
+<!--            android:name=".PythonActivity"-->
+<!--            android:label="@string/python_activity_name"-->
+<!--            android:taskAffinity="com.google.blockly.PythonActivity"-->
+<!--            android:windowSoftInputMode="stateHidden">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+<!--        <activity-->
+<!--            android:name=".DevTestsActivity"-->
+<!--            android:label="@string/dev_activity_name"-->
+<!--            android:theme="@style/StylesDemoTheme"-->
+<!--            android:taskAffinity="com.google.blockly.demo.MainActivity"-->
+<!--            android:windowSoftInputMode="stateHidden|adjustPan">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+<!--        <activity-->
+<!--            android:name=".SplitActivity"-->
+<!--            android:label="@string/split_activity_name"-->
+<!--            android:taskAffinity="com.google.blockly.demo.SplitActivity"-->
+<!--            android:windowSoftInputMode="stateHidden|adjustPan">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+
+<!--        <activity-->
+<!--            android:name=".StylesActivity"-->
+<!--            android:label="@string/style_activity_name"-->
+<!--            android:taskAffinity="com.google.blockly.demo.StylesActivity"-->
+<!--            android:theme="@style/StylesDemoTheme"-->
+<!--            android:windowSoftInputMode="stateHidden|adjustPan">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+<!--        <activity-->
+<!--            android:name=".FlyoutDemos"-->
+<!--            android:label="@string/flyout_activity_name"-->
+<!--            android:taskAffinity="com.google.blockly.demo.FlyoutDemos"-->
+<!--            android:windowSoftInputMode="stateHidden|adjustPan">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+<!--        <activity-->
+<!--            android:name=".flyout.AlwaysOpenToolboxActivity"-->
+<!--            android:label="@string/always_open_toolbox_activity_name"-->
+<!--            android:taskAffinity="com.google.blockly.demo.FlyoutDemos"-->
+<!--            android:windowSoftInputMode="stateHidden|adjustPan">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+<!--        <activity-->
+<!--            android:name=".flyout.NoCategoriesToolboxActivity"-->
+<!--            android:label="@string/no_categories_toolbox_activity_name"-->
+<!--            android:taskAffinity="com.google.blockly.demo.FlyoutDemos"-->
+<!--            android:windowSoftInputMode="stateHidden">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
     </application>
 
 </manifest>

@@ -256,7 +256,7 @@ public abstract class AbstractBlocklyActivity extends AppCompatActivity {
         }
         resetBlockFactory();  // Initial load of block definitions, extensions, and mutators.
         configureCategoryFactories();  // After BlockFactory; before Toolbox
-        reloadToolbox();
+        reloadToolbox();//加载toolbox
 
         // Load the workspace.
         boolean loadedPriorInstance = checkAllowRestoreBlocklyState(savedInstanceState)
@@ -526,6 +526,7 @@ public abstract class AbstractBlocklyActivity extends AppCompatActivity {
      * for the Activity.  It is also responsible for assigning {@link #mActionBar} and
      * {@link #mDrawerLayout}, and adding the view returned by {@link #onCreateContentView}.
      */
+
     protected void onCreateActivityRootView() {
         setContentView(R.layout.drawers_and_action_bar);
 
@@ -548,9 +549,16 @@ public abstract class AbstractBlocklyActivity extends AppCompatActivity {
             }
         }
 
-        mNavigationDrawer = onCreateAppNavigationDrawer();
-        if (mNavigationDrawer != null) {
-            setupAppNaviagtionDrawer();
+        View content2 = onCreateContentView(R.id.content_container2);
+        if (content2 != null) {
+            FrameLayout contentContainer = (FrameLayout) findViewById(R.id.content_container2);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            if (content2.getParent() != contentContainer) {
+                contentContainer.addView(content2, lp);
+            } else {
+                content2.setLayoutParams(lp);
+            }
         }
     }
 
@@ -656,6 +664,11 @@ public abstract class AbstractBlocklyActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setTitle(getWorkspaceTitle());
+
+            //Navigation
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.mipmap.screen);
         }
     }
 

@@ -5,13 +5,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <!-- The central view of the activity will be inserted here. -->
     <FrameLayout android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <FrameLayout android:id="@+id/content_container2"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:visibility="invisible"/>
+
+    <FrameLayout android:id="@+id/content_container3"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:visibility="invisible"/>
+
+    <FrameLayout android:id="@+id/content_container4"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:visibility="invisible"/>
+
     <!-- Drawers are appended programmatically in
       -  AbstractBlocklyActivity.onCreateAppNavigationDrawer()
       -->
+
+    <LinearLayout
+            android:background="#ffff"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:orientation="vertical">
+        <Button
+                android:id="@+id/btn_screen1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="切换屏幕1"/>
+        <Button
+                android:id="@+id/btn_screen2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="切换屏幕2" />
+        <Button
+                android:id="@+id/btn_screen3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="切换屏幕3"/>
+        <Button
+                android:id="@+id/btn_screen4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="切换屏幕4"/>
+    </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>

@@ -17,6 +17,7 @@ package com.google.blockly.android.codegen;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class CodeGenerationRequest {
         mBlocklyXml = xml;
         mBlockDefinitionsFilenames = blockDefinitionsFilenames;
         mBlockGeneratorsFilenames = blockGeneratorsFilenames;
+        Log.d("lyt","In CodeGenerationReq::;mFilenames = "+mBlockGeneratorsFilenames);
         mGeneratorLanguage = generatorsLanguage;
     }
 

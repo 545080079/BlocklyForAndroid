@@ -34,7 +34,7 @@ public class LanguageDefinition {
             = new LanguageDefinition("generators/python_compressed.js", "Blockly.Python");
 
     public final static LanguageDefinition ANDROID_LANGUAGE_DEFINITION
-            = new LanguageDefinition("generators/Android_compressed.js", "Blockly.Android");
+            = new LanguageDefinition("generators/android_compressed.js", "Blockly.Android");
 
     /**
      * Standard definition for the Dart language generator. (Requires "full" flavor)

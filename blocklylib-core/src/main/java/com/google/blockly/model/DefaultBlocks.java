@@ -45,7 +45,7 @@ public final class DefaultBlocks {
     /** Path to a toolbox that has most of the default blocks organized into categories. */
     public static final String TOOLBOX_PATH = "default/toolbox.xml";
 
-    public static final String TOOLBOX_PATH_Android = "default/toolbox_android.xml";
+    public static final String TOOLBOX_PATH_Android = "android/toolbox_android.xml";
 
     /**
      * Default language definition uses the JavaScript language generator.

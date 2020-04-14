@@ -27,3 +27,6 @@
     android:saveEnabled="false"
     app:dropdownItemLayout="@layout/default_spinner_dropdown_item"
     app:itemLayout="@layout/default_spinner_closed_item"/>
+
+
+<!--      CreateVar方法调用代理-> TroopMsgProxy: insertToList-> 新的VAR加入到Toolbox   -->

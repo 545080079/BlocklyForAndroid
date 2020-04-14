@@ -23,6 +23,28 @@
         </block>
         <block type="text">
         </block>
+        <block type="androidapi">
+            <field name="API_type"></field>
+            <field name="API_time"></field>
+        </block>
+        <block type="android_math_random_range">
+            <field name="FROM"></field>
+            <field name="TO"></field>
+        </block>
+        <block type="textview">
+            <field name="value"></field>
+        </block>
+        <block type="import_and_onCreate">
+            <field name="DO"></field>
+        </block>
+
+
+    </category>
+    <category name="SingleButton">
+        <block type="singleButton_click">
+            <field name="afterClickDefault"></field>
+            <field name="afterClickTODO"></field>
+        </block>
     </category>
 
     <category name="Logic" colour="210">
